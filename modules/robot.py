@@ -8,9 +8,9 @@ import numpy as np
 
 # ノイズなしの理想ロボットクラス
 class IdealRobot:
-    def __init__(self, pose, agent=None, sensor=None, color="black"):
+    def __init__(self, pose, agent=None, sensor=None, size=0.15, color="black"):
         self.pose = np.array(pose)
-        self.r = 0.1
+        self.r = size
         self.color = color
         self.agent = agent
         self.poses = [pose]

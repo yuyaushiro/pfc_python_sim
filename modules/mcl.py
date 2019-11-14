@@ -18,7 +18,7 @@ class Particle:
         pomega = omega + ns[2]*math.sqrt(abs(nu)/time) + ns[3]*math.sqrt(abs(omega)/time)
         self.pose = IdealRobot.transition_state(pnu, pomega, time, self.pose)
 
-    def observation_update(self, observation, envmap, distance_dev_rate, direction_dev):  #変更_
+    def observation_update(self, observation, envmap, distance_dev_rate, direction_dev):
         for d in observation:
             obs_pos = d[0]
             obs_id = d[1]
@@ -82,7 +82,7 @@ class Mcl:
     def draw(self, ax, elems):
         xs = [p.pose[0] for p in self.particles]
         ys = [p.pose[1] for p in self.particles]
-        vxs = [math.cos(p.pose[2])*p.weight*len(self.particles) for p in self.particles]
-        vys = [math.sin(p.pose[2])*p.weight*len(self.particles) for p in self.particles]
+        vxs = [math.cos(p.pose[2]) for p in self.particles]
+        vys = [math.sin(p.pose[2]) for p in self.particles]
         elems.append(ax.quiver(xs, ys, vxs, vys, angles='xy', scale_units='xy',
-                               scale=1.5, color="blue", alpha=0.5))
+                               scale=2.0, color="blue", alpha=0.2))

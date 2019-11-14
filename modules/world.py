@@ -70,3 +70,19 @@ class Map:
 
     def draw(self, ax, elems):
         for lm in self.landmarks: lm.draw(ax, elems)
+
+
+class Goal:
+    def __init__(self, x, y, radius=0.3, value=0.0):
+        self.pos = np.array([x, y]).T
+        self.radius = radius
+        self.value = value
+
+    def inside(self, pose):
+        return self.radius > math.sqrt( (self.pos[0]-pose[0])**2 + (self.pos[1]-pose[1])**2 )
+
+    def draw(self, ax, elems):
+        x, y = self.pos
+        c = ax.scatter(x + 0.16, y + 0.5, s=50, marker=">", label="landmarks", color="red")
+        elems.append(c)
+        elems += ax.plot([x, x], [y, y + 0.6], color="black")

@@ -50,8 +50,11 @@ class IdealRobot:
         if not self.agent: return
 
         # センサが載っていたら観測する
-        if self.sensor: obs = self.sensor.observe(self.pose)
-        nu, omega = self.agent.make_decision(obs)
+        if self.sensor:
+            observation = self.sensor.observe(self.pose)
+
+        # 行動決定
+        nu, omega = self.agent.make_decision(self.pose, observation)
 
         # ロボットの状態が遷移する
         self.pose = self.transition_state(nu, omega, time_interval, self.pose)

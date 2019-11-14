@@ -10,7 +10,7 @@ import numpy as np
 class IdealRobot:
     def __init__(self, pose, agent=None, sensor=None, color="black"):
         self.pose = np.array(pose)
-        self.r = 0.2
+        self.r = 0.1
         self.color = color
         self.agent = agent
         self.poses = [pose]

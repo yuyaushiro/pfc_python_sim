@@ -25,12 +25,14 @@ if __name__ == '__main__':   ###name_indent
     world.append(goal)
 
     ### ロボットを作る ###
-    initial_pose = np.array([-3, -1, 0]).T
-    motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
-    # motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
-    estimator = Mcl(m, initial_pose, 100, motion_noise_stds=motion_noise_stds)
+    init_pose = np.array([-3, -1, 0])
+    init_pose_stds = np.array([0.2, 0.2, 0.01])
+    # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
+    motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
+    estimator = Mcl(m, init_pose, 100, motion_noise_stds=motion_noise_stds,
+                    init_pose_stds=init_pose_stds)
     agent = GradientPfc(time_interval, 0.4, 1.0, estimator, grid_map, goal)
-    robot = IdealRobot(initial_pose, sensor=Camera(m), agent=agent)
+    robot = IdealRobot(init_pose, sensor=Camera(m), agent=agent)
     world.append(robot)
 
     world.draw()

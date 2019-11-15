@@ -36,8 +36,16 @@ class Particle:
 class Mcl:
     def __init__(self, envmap, init_pose, num,
                  motion_noise_stds={"nn":0.19, "no":0.001, "on":0.13, "oo":0.2},
-                 distance_dev_rate=0.14, direction_dev=0.05):
-        self.particles = [Particle(init_pose, 1.0/num) for i in range(num)]
+                 distance_dev_rate=0.14, direction_dev=0.05,
+                 init_pose_stds=None):
+        if init_pose_stds is None:
+            self.particles = [Particle(init_pose, 1.0/num) for i in range(num)]
+        else:
+            x_rand = np.random.normal(init_pose[0], init_pose_stds[0], num)
+            y_rand = np.random.normal(init_pose[1], init_pose_stds[1], num)
+            t_rand = np.random.normal(init_pose[2], init_pose_stds[2], num)
+            rand = np.vstack((x_rand, y_rand, t_rand)).T
+            self.particles = [Particle(r, 1.0/num) for r in rand]
         self.map = envmap
         self.distance_dev_rate = distance_dev_rate
         self.direction_dev = direction_dev

@@ -70,15 +70,15 @@ class GradientAgent:
         rotation = pose[2]
         head_direction = self.angle_difference(direction, rotation)
         # 旋回のみを行う角度
-        spin_turn_thresh = 45 * math.pi/180
+        spin_turn_thresh = 60 * math.pi/180
         if head_direction > spin_turn_thresh:
-            return 0.0, 0.4
+            return 0.0, self.max_omega
         if head_direction < -spin_turn_thresh:
-            return 0.0, -0.4
+            return 0.0, self.max_omega
         # 速度の旋回比率
         turn_ratio = head_direction / spin_turn_thresh
-        omega = 0.4 * turn_ratio
-        nu = 0.2 * (spin_turn_thresh- turn_ratio)
+        omega = self.max_omega * turn_ratio
+        nu = self.max_nu * (spin_turn_thresh - turn_ratio)
 
         return nu, omega
 

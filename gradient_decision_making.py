@@ -31,7 +31,7 @@ if __name__ == '__main__':   ###name_indent
     # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
     motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
     estimator = Mcl(m, initial_pose, 100, motion_noise_stds=motion_noise_stds)
-    agent = GradientAgent(time_interval, 0.2, 0.5, grid_map, goal)
+    agent = GradientAgent(time_interval, 0.2, 0.5, np.deg2rad(45), grid_map, goal)
     r = IdealRobot(initial_pose, sensor=Camera(m), agent=agent)
     world.append(r)
 

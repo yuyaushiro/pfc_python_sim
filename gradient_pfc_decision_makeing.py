@@ -31,7 +31,7 @@ if __name__ == '__main__':   ###name_indent
     motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
     estimator = Mcl(m, init_pose, 100, motion_noise_stds=motion_noise_stds,
                     init_pose_stds=init_pose_stds)
-    agent = GradientPfc(time_interval, 0.4, 1.0, estimator, grid_map, goal)
+    agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(45), estimator, grid_map, goal)
     robot = IdealRobot(init_pose, sensor=Camera(m), agent=agent)
     world.append(robot)
 

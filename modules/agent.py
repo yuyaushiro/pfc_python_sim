@@ -1,7 +1,8 @@
 from modules.mcl import Particle, Mcl
+from modules.grid_map import GridMap
+
 import math
 import numpy as np
-import cv2
 
 
 class Agent:
@@ -37,8 +38,9 @@ class EstimationAgent:
         elems.append(ax.text(x, y+0.1, s, fontsize=8))
 
 
+# 2次元の価値関数の勾配をもとに行動するエージェントクラス
 class GradientAgent:
-    def __init__(self, time_interval, max_nu, max_omega, map_name, widths, goal):
+    def __init__(self, time_interval, max_nu, max_omega, grid_map, goal):
         self.time_interval = time_interval
 
         # 最大速度設定
@@ -46,67 +48,22 @@ class GradientAgent:
         self.max_omega = max_omega
 
         # マップ設定
-        self.map_image = cv2.imread('map/' + map_name + '.png', cv2.IMREAD_GRAYSCALE).T[:, ::-1]
-        x_pixel, y_pixel = self.map_image.shape
-        self.pose_min = np.array([-5.0, -5.0])
-        self.pose_max = np.array([x_pixel*widths[0], y_pixel*widths[1]]) + self.pose_min
-        self.widths = widths
-        self.index_nums = ((self.pose_max - self.pose_min)/self.widths).astype(int)
+        self.grid_map = grid_map
 
         # ゴール設定
         self.goal = goal
         self.in_goal = False
-
-        # 価値関数初期化
-        self.value_data = self.init_value(self.index_nums, map_name)
 
     # 行動決定する
     def make_decision(self, pose, observation):
         if self.in_goal:
             return 0.0, 0.0
 
-        x_grad, y_grad = self.calc_gradient(pose)
+        x_grad, y_grad = self.grid_map.calc_gradient(pose)
         direction = math.atan2(y_grad, x_grad)
         nu, omega = self.direction_to_vel(pose, direction)
 
         return nu, omega
-
-    # 価値関数を初期化する
-    def init_value(self, index_nums, map_name):
-        tmp = np.zeros(np.r_[index_nums])
-        for line in open('value/' + map_name + '.value', 'r'):
-            d = line.split()
-            tmp[int(d[0]), int(d[1])] = float(d[2])
-
-        return tmp
-
-    # 勾配を計算する
-    def calc_gradient(self, pose):
-        x_up = pose[0] + self.widths[0]
-        x_low = pose[0] - self.widths[0]
-        y_up = pose[1] + self.widths[1]
-        y_low = pose[1] - self.widths[1]
-
-        x_grad = self.value([x_up, pose[1]]) - self.value([x_low, pose[1]])
-        y_grad = self.value([pose[0], y_up]) - self.value([pose[0], y_low])
-
-        return x_grad, y_grad
-
-    # 位置を価値関数リストのインデックスに変換
-    def to_index(self, position, pose_min, index_nums, widths):
-        index = np.floor((position - pose_min)/widths).astype(int)
-        for i in [0, 1]:
-            if index[i] < 0: index[i] = 0
-            elif index[i] >= index_nums[i]: index[i] = index_nums[i] - 1
-
-        return tuple(index)
-
-    # 価値関数を参照する
-    def value(self, pose):
-        position = pose[0:2]
-        index = self.to_index(position, self.pose_min, self.index_nums, self.widths)
-        value = self.value_data[index]
-        return value
 
     # 勾配から速度に変換する
     def direction_to_vel(self, pose, direction):
@@ -122,6 +79,7 @@ class GradientAgent:
         turn_ratio = head_direction / spin_turn_thresh
         omega = 0.4 * turn_ratio
         nu = 0.2 * (spin_turn_thresh- turn_ratio)
+
         return nu, omega
 
     # angle1 - angle2 を計算
@@ -131,10 +89,12 @@ class GradientAgent:
         angle_diff = angle1 - angle2
         if angle_diff > math.pi: angle_diff -= 2*math.pi
         if angle_diff < -math.pi: angle_diff += 2*math.pi
+
         return angle_diff
 
     # 角度の正規化 [0 ~ 360)
     def normalize_angle(self, rotation):
         while rotation < 0: rotation += 2*math.pi
         while rotation >= 2*math.pi: rotation -= 2*math.pi
+
         return rotation

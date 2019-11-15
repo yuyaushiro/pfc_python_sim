@@ -1,4 +1,5 @@
 from modules.world import World, Landmark, Map, Goal
+from modules.grid_map import GridMap
 from modules.robot import IdealRobot
 from modules.sensor import IdealCamera, Camera
 from modules.agent import Agent, EstimationAgent, GradientAgent
@@ -16,6 +17,7 @@ if __name__ == '__main__':   ###name_indent
     m = Map()
     for ln in [(-4,2), (2,-3), (3,3)]: m.append_landmark(Landmark(*ln))
     world.append(m)
+    grid_map = GridMap('CorridorGimp_200x200', origin=[-5.0, -5.0])
 
     ##ゴールの追加##
     goal = Goal(1.75,3.0)  #goalを変数に
@@ -26,7 +28,7 @@ if __name__ == '__main__':   ###name_indent
     # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
     motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
     estimator = Mcl(m, initial_pose, 100, motion_noise_stds=motion_noise_stds)
-    agent = GradientAgent(time_interval, 0.2, 0.5, 'CorridorGimp_200x200', [0.05, 0.05], goal)
+    agent = GradientAgent(time_interval, 0.2, 0.5, grid_map, goal)
     r = IdealRobot(initial_pose, sensor=Camera(m), agent=agent)
     world.append(r)
 

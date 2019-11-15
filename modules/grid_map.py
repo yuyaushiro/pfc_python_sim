@@ -1,3 +1,4 @@
+import matplotlib
 import math
 import cv2
 import numpy as np
@@ -61,3 +62,7 @@ class GridMap:
             value_data[int(d[0]), int(d[1])] = float(d[2])
 
         return value_data
+
+    def draw(self, ax, elems):
+        ax.imshow(self.map_image, extent=[*ax.get_xlim(), *ax.get_ylim()],
+                  cmap='gray', alpha=0.6)

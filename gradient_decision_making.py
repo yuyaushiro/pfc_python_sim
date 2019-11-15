@@ -17,7 +17,10 @@ if __name__ == '__main__':   ###name_indent
     m = Map()
     for ln in [(-4,2), (2,-3), (3,3)]: m.append_landmark(Landmark(*ln))
     world.append(m)
+
+    ### 専有格子地図を追加 ###
     grid_map = GridMap('CorridorGimp_200x200', origin=[-5.0, -5.0])
+    # world.append(grid_map)
 
     ##ゴールの追加##
     goal = Goal(1.75,3.0)  #goalを変数に

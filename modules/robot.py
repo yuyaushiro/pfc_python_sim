@@ -50,6 +50,7 @@ class IdealRobot:
         if not self.agent: return
 
         # センサが載っていたら観測する
+        observation = None
         if self.sensor:
             observation = self.sensor.observe(self.pose)
 

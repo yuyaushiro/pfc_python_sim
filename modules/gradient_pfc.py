@@ -96,23 +96,6 @@ class GradientPfc:
 
         return nu, omega
 
-    # angle1 - angle2 を計算
-    def angle_difference(self, angle1, angle2):
-        angle1 = self.normalize_angle(angle1)
-        angle2 = self.normalize_angle(angle2)
-        angle_diff = angle1 - angle2
-        if angle_diff > math.pi: angle_diff -= 2*math.pi
-        if angle_diff < -math.pi: angle_diff += 2*math.pi
-
-        return angle_diff
-
-    # 角度の正規化 [0 ~ 360)
-    def normalize_angle(self, rotation):
-        while rotation < 0: rotation += 2*math.pi
-        while rotation >= 2*math.pi: rotation -= 2*math.pi
-
-        return rotation
-
     # 描画する
     def draw(self, ax, elems):
         # 推定器の描画

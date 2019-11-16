@@ -30,11 +30,16 @@ class GradientPfc:
         # 積極度
         self.magnitude = magnitude
 
-        # パーティクルの勾配リスト
-        self.p_gradient = np.zeros((len(self.estimator.particles), 2))
+        # 描画用
         self.p_value = np.zeros(len(self.estimator.particles))
+        self.p_gradient = np.zeros((len(self.estimator.particles), 2))
+        self.p_relative_gradient = np.zeros((len(self.estimator.particles), 2))
+        self.direction = 0
+        self.true_pose = np.array([0.0, 0.0, 0.0])
 
     def make_decision(self, pose, observation):
+        # 描画用に正しい姿勢を保持
+        self.true_pose = pose
         # 状態を推定
         self.estimate_state(self.estimator, observation)
 
@@ -49,10 +54,11 @@ class GradientPfc:
             np.array([self.rotate_vector(self.p_gradient[i], -p.pose[2])
                       for i, p in enumerate(self.estimator.particles)])
         # Q_gradient
-        gradient = np.dot(1/abs(self.p_value**self.magnitude), self.p_relative_gradient)
+        gradient = np.dot(1/abs(self.p_value**self.magnitude),
+                          self.p_relative_gradient)
 
-        direction = math.atan2(gradient[1], gradient[0])
-        nu, omega = self.direction_to_vel(direction)
+        self.direction = math.atan2(gradient[1], gradient[0])
+        nu, omega = self.direction_to_vel(self.direction)
 
         self.prev_nu, self.prev_omega = nu, omega
         return nu, omega
@@ -79,7 +85,7 @@ class GradientPfc:
         if direction > self.turn_only_thresh:
             return 0.0, self.max_omega
         if direction < -self.turn_only_thresh:
-            return 0.0, self.max_omega
+            return 0.0, -self.max_omega
         # 速度の旋回比率
         turn_ratio = direction / self.turn_only_thresh
         omega = self.max_omega * turn_ratio
@@ -104,5 +110,7 @@ class GradientPfc:
 
         return rotation
 
+    # 描画する
     def draw(self, ax, elems):
+        # 推定器の描画
         self.estimator.draw(ax, elems)

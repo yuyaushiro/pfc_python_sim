@@ -22,4 +22,14 @@ rand = np.vstack((x_rand, y_rand)).T
 # print(rand)
 
 now = datetime.datetime.now()
-print(now.strftime('_%Y%m%d_%H%M%S'))
+# print(now.strftime('_%Y%m%d_%H%M%S'))
+
+# 回転行列チェック
+robot = np.array([0, 0, np.deg2rad(60)])
+grad_p = np.array([1, 2])
+c_r, s_r = np.cos(-robot[2]), np.sin(-robot[2])
+rot = np.array([[c_r, -s_r], [s_r, c_r]])
+grad = np.dot(rot, grad_p)
+phi = np.arctan2(grad[1], grad[0])
+print(grad)
+print(np.rad2deg(phi))

@@ -31,24 +31,28 @@ class GradientPfc:
         self.magnitude = magnitude
 
         # パーティクルの勾配リスト
-        self.particles_gradient = np.zeros((len(self.estimator.particles), 2))
+        self.p_gradient = np.zeros((len(self.estimator.particles), 2))
+        self.p_value = np.zeros(len(self.estimator.particles))
 
     def make_decision(self, pose, observation):
         # 状態を推定
         self.estimate_state(self.estimator, observation)
 
         # パーティクルの価値を取得
-        self.particles_value = np.array([self.grid_map.value(p.pose)
-                                         for p in self.estimator.particles])
+        self.p_value = np.array([self.grid_map.value(p.pose)
+                                 for p in self.estimator.particles])
         # パーティクルの勾配を計算
-        self.particles_gradient = np.array([self.grid_map.calc_gradient(p.pose)
-                                            for p in self.estimator.particles])
+        self.p_gradient = np.array([self.grid_map.calc_gradient(p.pose)
+                                    for p in self.estimator.particles])
+        # 各パーティクルの向かいたい方向
+        self.p_relative_gradient =\
+            np.array([self.rotate_vector(self.p_gradient[i], -p.pose[2])
+                      for i, p in enumerate(self.estimator.particles)])
         # Q_gradient
-        gradient = np.dot(1/(self.particles_value**self.magnitude),
-                          self.particles_gradient)
+        gradient = np.dot(1/abs(self.p_value**self.magnitude), self.p_relative_gradient)
 
         direction = math.atan2(gradient[1], gradient[0])
-        nu, omega = self.direction_to_vel(pose, direction)
+        nu, omega = self.direction_to_vel(direction)
 
         self.prev_nu, self.prev_omega = nu, omega
         return nu, omega
@@ -62,17 +66,22 @@ class GradientPfc:
             if self.goal.inside(p.pose): p.weight *= 1e-10
         self.estimator.resampling()
 
+    # ベクトルを回転する
+    def rotate_vector(self, vector, theta):
+        c_r, s_r = np.cos(theta), np.sin(theta)
+        rotation = np.array([[c_r, -s_r], [s_r, c_r]])
+        rotated_vector = np.dot(rotation, vector)
+        return rotated_vector
+
     # 勾配から速度に変換する
-    def direction_to_vel(self, pose, direction):
-        rotation = pose[2]
-        head_direction = self.angle_difference(direction, rotation)
+    def direction_to_vel(self, direction):
         # 旋回のみを行う角度
-        if head_direction > self.turn_only_thresh:
+        if direction > self.turn_only_thresh:
             return 0.0, self.max_omega
-        if head_direction < -self.turn_only_thresh:
+        if direction < -self.turn_only_thresh:
             return 0.0, self.max_omega
         # 速度の旋回比率
-        turn_ratio = head_direction / self.turn_only_thresh
+        turn_ratio = direction / self.turn_only_thresh
         omega = self.max_omega * turn_ratio
         nu = self.max_nu * (1 - turn_ratio)
 

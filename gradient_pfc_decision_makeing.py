@@ -13,7 +13,7 @@ import numpy as np
 if __name__ == '__main__':   ###name_indent
     time_interval = 0.1
     # world = World(10, time_interval, debug=False, recording_file_name='aaa')
-    world = World(10, time_interval, debug=False)
+    world = World(100, time_interval, debug=False)
 
     m = Map()
 

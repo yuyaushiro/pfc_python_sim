@@ -7,7 +7,8 @@ import numpy as np
 
 class GradientPfc:
     def __init__(self, time_interval, max_nu, max_omega, turn_only_thresh,
-                 estimator, grid_map, goal, magnitude=2):
+                 estimator, grid_map, goal, magnitude=2,
+                 draw_direction=False, draw_p_gradient=False):
         self.time_interval = time_interval
 
         # 最大速度設定
@@ -31,6 +32,8 @@ class GradientPfc:
         self.magnitude = magnitude
 
         # 描画用
+        self.draw_direction = draw_direction
+        self.draw_p_gradient = draw_p_gradient
         self.p_value = np.zeros(len(self.estimator.particles))
         self.p_gradient = np.zeros((len(self.estimator.particles), 2))
         self.p_relative_gradient = np.zeros((len(self.estimator.particles), 2))
@@ -114,3 +117,18 @@ class GradientPfc:
     def draw(self, ax, elems):
         # 推定器の描画
         self.estimator.draw(ax, elems)
+
+        # パーティクルの勾配を描画
+        if self.draw_p_gradient:
+            for i, g in enumerate(self.p_gradient):
+                pos = self.estimator.particles[i].pose[0:2]
+                posn = pos + g * 0.2
+                elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='green')
+
+        # 向かう方向を描画
+        if self.draw_direction:
+            pos = self.true_pose[0:2]
+            posn = pos + np.array([math.cos(self.direction+self.true_pose[2]),
+                                math.sin(self.direction+self.true_pose[2])]) * 3
+            elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='red')
+

@@ -4,15 +4,17 @@ import matplotlib.pyplot as plt
 import math
 import matplotlib.patches as patches
 import numpy as np
+import datetime
 
 
 # 世界を管理するクラス
 class World:
-    def __init__(self, time_span, time_interval, debug=False):
+    def __init__(self, time_span, time_interval, debug=False, recording_file_name=None):
         self.objects = []
         self.debug = debug
         self.time_span = time_span
         self.time_interval = time_interval
+        self.recording_file_name = recording_file_name
 
     # 世界にオブジェクトを追加する
     def append(self,obj):
@@ -35,7 +37,14 @@ class World:
         else:
             self.ani = anm.FuncAnimation(fig, self.one_step, fargs=(elems, ax),
                                      frames=int(self.time_span/self.time_interval)+1, interval=int(self.time_interval*1000), repeat=False)
-            plt.show()
+            if self.recording_file_name is None:
+                plt.show()
+            else:
+                Writer = anm.writers['ffmpeg']
+                writer = Writer(fps=10)
+                now = datetime.datetime.now()
+                self.ani.save('movie/' + self.recording_file_name + now.strftime('-%Y%m%d-%H%M%S') + '.mp4',
+                              writer=writer, dpi=250)
 
     # 世界を 1 ステップ進める
     def one_step(self, i, elems, ax):

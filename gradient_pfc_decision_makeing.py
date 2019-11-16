@@ -32,13 +32,13 @@ if __name__ == '__main__':   ###name_indent
     init_pose_stds = np.array([0.2, 0.4, 0.01])
     # モーションアップデートのばらつき
     # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
-    motion_noise_stds = {"nn":0.05, "no":0.05, "on":0.05, "oo":0.05}
+    motion_noise_stds = {"nn":0.02, "no":0.02, "on":0.02, "oo":0.02}
     # 推定器
-    estimator = Mcl(m, init_pose, 100, motion_noise_stds=motion_noise_stds,
+    estimator = Mcl(m, init_pose, 300, motion_noise_stds=motion_noise_stds,
                     init_pose_stds=init_pose_stds)
     # エージェント
     agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(30), estimator, grid_map, goal,
-                        magnitude=2, draw_direction=True, draw_p_gradient=True)
+                        magnitude=2, draw_direction=True, draw_p_gradient=False)
     # ロボット
     robot = IdealRobot(init_pose, sensor=Camera(m), agent=agent)
     world.append(robot)

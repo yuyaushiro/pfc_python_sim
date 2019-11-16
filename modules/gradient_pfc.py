@@ -50,7 +50,7 @@ class GradientPfc:
         self.p_value = np.array([self.grid_map.value(p.pose)
                                  for p in self.estimator.particles])
         # パーティクルの勾配を計算
-        self.p_gradient = np.array([self.grid_map.calc_gradient(p.pose)
+        self.p_gradient = np.array([self.grid_map.gradient(p.pose)
                                     for p in self.estimator.particles])
         # 各パーティクルの向かいたい方向
         self.p_relative_gradient =\

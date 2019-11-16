@@ -36,5 +36,9 @@ phi = np.arctan2(grad[1], grad[0])
 
 a = np.array([0, 1, 2, 3, 4, 5])
 b = np.array([0, 1, 2, 3, 4, 5])
-print(np.dot(a, b))
-print(a * b)
+# print(np.dot(a, b))
+# print(a * b)
+
+a = np.zeros(np.r_[5, 2])
+a[2] = [1, 4]
+print(a)

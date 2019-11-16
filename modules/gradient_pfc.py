@@ -58,7 +58,7 @@ class GradientPfc:
                       for i, p in enumerate(self.estimator.particles)])
         # Q_gradient
         gradient = np.dot(1/abs(self.p_value**self.magnitude),
-                          self.p_relative_gradient)
+                          self.p_relative_gradient*3)
 
         self.direction = math.atan2(gradient[1], gradient[0])
         nu, omega = self.direction_to_vel(self.direction)
@@ -112,6 +112,6 @@ class GradientPfc:
         if self.draw_direction:
             pos = self.true_pose[0:2]
             posn = pos + np.array([math.cos(self.direction+self.true_pose[2]),
-                                math.sin(self.direction+self.true_pose[2])]) * 3
+                                math.sin(self.direction+self.true_pose[2])])
             elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='red')
 

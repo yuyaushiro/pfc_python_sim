@@ -92,7 +92,7 @@ class Mcl:
     def draw(self, ax, elems):
         xs = [p.pose[0] for p in self.particles]
         ys = [p.pose[1] for p in self.particles]
-        vxs = [math.cos(p.pose[2]) for p in self.particles]
-        vys = [math.sin(p.pose[2]) for p in self.particles]
+        vxs = [math.cos(p.pose[2])*p.weight*len(self.particles) for p in self.particles]
+        vys = [math.sin(p.pose[2])*p.weight*len(self.particles) for p in self.particles]
         elems.append(ax.quiver(xs, ys, vxs, vys, angles='xy', scale_units='xy',
-                               scale=2.0, color="blue", alpha=0.2))
+                               color="blue", alpha=0.5))

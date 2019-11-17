@@ -46,9 +46,6 @@ class GradientPfc:
         # 状態を推定
         self.estimate_state(self.estimator, observation)
 
-        # パーティクルの価値を取得
-        self.p_value = np.array([self.grid_map.value(p.pose)
-                                 for p in self.estimator.particles])
         # パーティクルの勾配を計算
         self.p_gradient = np.array([self.grid_map.gradient(p.pose)
                                     for p in self.estimator.particles])
@@ -56,6 +53,14 @@ class GradientPfc:
         self.p_relative_gradient =\
             np.array([self.rotate_vector(self.p_gradient[i], -p.pose[2])
                       for i, p in enumerate(self.estimator.particles)])
+
+        # パーティクルの価値を取得
+        p_pos_value = np.array([self.grid_map.value(p.pose)
+                                for p in self.estimator.particles])
+        p_rot_value = np.array([abs(math.atan2(g[1], g[0])) / self.max_omega
+                                for g in self.p_relative_gradient])
+        self.p_value = p_pos_value - p_rot_value
+
         # Q_gradient
         gradient = np.dot(1/abs(self.p_value**self.magnitude),
                           self.p_relative_gradient*3)

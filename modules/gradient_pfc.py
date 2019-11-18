@@ -63,7 +63,7 @@ class GradientPfc:
 
         # Q_gradient
         gradient = np.dot(1/abs(self.p_value**self.magnitude),
-                          self.p_relative_gradient*3)
+                          self.p_relative_gradient)
 
         self.direction = math.atan2(gradient[1], gradient[0])
         nu, omega = self.direction_to_vel(self.direction)

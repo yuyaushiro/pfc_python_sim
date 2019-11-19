@@ -42,3 +42,8 @@ b = np.array([0, 1, 2, 3, 4, 5])
 a = np.zeros(np.r_[5, 2])
 a[2] = [1, 4]
 print(a)
+
+        # for g in self.p_gradient:
+        #     norm = np.linalg.norm(g)
+        #     a = norm**2 / norm
+        #     g *= a

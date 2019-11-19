@@ -37,7 +37,7 @@ if __name__ == '__main__':   ###name_indent
     estimator = Mcl(m, init_pose, 300, motion_noise_stds=motion_noise_stds,
                     init_pose_stds=init_pose_stds)
     # エージェント
-    agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(30), estimator, grid_map, goal,
+    agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(60), estimator, grid_map, goal,
                         magnitude=2, draw_direction=True, draw_p_gradient=False)
     # ロボット
     robot = IdealRobot(init_pose, sensor=Camera(m), agent=agent)

@@ -97,7 +97,7 @@ class GradientPfc:
         # 速度の旋回比率
         turn_ratio = direction / self.turn_only_thresh
         omega = self.max_omega * turn_ratio
-        nu = self.max_nu * (1 - turn_ratio)
+        nu = self.max_nu * (1 - abs(turn_ratio))
 
         return nu, omega
 

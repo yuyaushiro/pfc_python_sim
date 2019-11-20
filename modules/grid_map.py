@@ -6,7 +6,7 @@ import numpy as np
 
 # 格子地図クラス
 class GridMap:
-    def __init__(self, map_name, resolution=[0.05, 0.05], origin=[0.0, 0.0]):
+    def __init__(self, map_name, resolution=[0.05, 0.05], origin=[0.0, 0.0], obstacle_thresh=254):
         # マップ名
         self.map_name = map_name
         # マップ画像
@@ -21,6 +21,8 @@ class GridMap:
         self.pose_min = np.array(origin)
         # マップ内の最大の姿勢
         self.pose_max = self.cell_num*self.resolution + self.pose_min
+        # 障害物閾値
+        self.obstacle_thresh = obstacle_thresh
 
         # 価値関数の初期化
         self.value_data = self.init_value(self.cell_num, self.map_name)
@@ -51,6 +53,14 @@ class GridMap:
             elif index[i] >= self.cell_num[i]: index[i] = self.cell_num[i] - 1
 
         return tuple(index)
+
+    def in_obstacle(self, pose):
+        position = pose[0:2]
+        index = self.to_index(position)
+        if self.map_data[index] < self.obstacle_thresh:
+            return True
+        else:
+            return False
 
     # 価値関数の初期化
     def init_value(self, cell_num, map_name):

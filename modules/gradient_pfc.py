@@ -54,6 +54,12 @@ class GradientPfc:
             np.array([self.rotate_vector(self.p_gradient[i], -p.pose[2])
                       for i, p in enumerate(self.estimator.particles)])
 
+        # 各パーティクルの回避率
+        for i, g in enumerate(self.p_relative_gradient):
+            norm = np.linalg.norm(g)
+            tmp = norm**(self.estimator.particles[i].avoid_weight)
+            g *= tmp
+
         # パーティクルの価値を取得
         p_pos_value = np.array([self.grid_map.value(p.pose)
                                 for p in self.estimator.particles])
@@ -79,6 +85,12 @@ class GradientPfc:
         for p in self.estimator.particles:
             if self.goal.inside(p.pose): p.weight *= 1e-10
         self.estimator.resampling()
+
+        for p in self.estimator.particles:
+            if self.grid_map.in_obstacle(p.pose):
+                p.increase_avoid_weight(self.time_interval)
+            else:
+                p.decrease_avoid_weight(self.time_interval)
 
     # ベクトルを回転する
     def rotate_vector(self, vector, theta):
@@ -111,7 +123,10 @@ class GradientPfc:
             for i, g in enumerate(self.p_gradient):
                 pos = self.estimator.particles[i].pose[0:2]
                 posn = pos + g * 0.2
-                elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='green')
+                if self.estimator.particles[i].is_avoiding:
+                    elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='green')
+                else:
+                    elems += ax.plot([pos[0], posn[0]], [pos[1], posn[1]], color='lightgreen')
 
         # 向かう方向を描画
         if self.draw_direction:

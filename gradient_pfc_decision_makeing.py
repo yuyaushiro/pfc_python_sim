@@ -27,18 +27,18 @@ if __name__ == '__main__':   ###name_indent
 
     ### ロボットを作る ###
     # 初期位置
-    init_pose = np.array([-4.5, 0.5, 0])
+    init_pose = np.array([-4.0, -1.0, 0])
     # 初期位置推定のばらつき
-    init_pose_stds = np.array([0.2, 0.4, 0.01])
+    init_pose_stds = np.array([0.4, 0.2, 0.01])
     # モーションアップデートのばらつき
     # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
     motion_noise_stds = {"nn":0.02, "no":0.02, "on":0.02, "oo":0.02}
     # 推定器
-    estimator = Mcl(m, init_pose, 300, motion_noise_stds=motion_noise_stds,
+    estimator = Mcl(m, init_pose, 100, motion_noise_stds=motion_noise_stds,
                     init_pose_stds=init_pose_stds)
     # エージェント
-    agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(60), estimator, grid_map, goal,
-                        magnitude=2, draw_direction=True, draw_p_gradient=False)
+    agent = GradientPfc(time_interval, 0.2, 0.5, np.deg2rad(90), estimator, grid_map, goal,
+                        magnitude=2, draw_direction=True, draw_p_gradient=True)
     # ロボット
     robot = IdealRobot(init_pose, sensor=Camera(m), agent=agent)
     world.append(robot)

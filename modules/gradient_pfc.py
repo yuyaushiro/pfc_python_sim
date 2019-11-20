@@ -73,10 +73,13 @@ class GradientPfc:
         for p in self.estimator.particles:
             g = self.rotate_vector(gradient, p.pose[2])
             theta = math.atan2(g[1], g[0])
+            # 今回の行動による次ステップの位置
             pose = self.calc_next_state(self.max_omega, theta, self.time_interval, p.pose)
             if self.grid_map.in_obstacle(pose):
+                # 障害物内だったら回避重みを増やす
                 p.increase_avoid_weight(self.time_interval)
             else:
+                # 障害物外だったら回避重みを減らす
                 p.decrease_avoid_weight(self.time_interval)
 
         self.direction = math.atan2(gradient[1], gradient[0])

@@ -68,6 +68,14 @@ class GradientPfc:
         # Q_gradient
         gradient = np.dot(1/abs(self.p_value**self.magnitude),
                           self.p_relative_gradient)
+        for p in self.estimator.particles:
+            g = self.rotate_vector(gradient, p.pose[2])
+            theta = math.atan2(g[1], g[0])
+            pose = self.calc_next_state(self.max_omega, theta, self.time_interval, p.pose)
+            if self.grid_map.in_obstacle(pose):
+                p.increase_avoid_weight(self.time_interval)
+            else:
+                p.decrease_avoid_weight(self.time_interval)
 
         self.direction = math.atan2(gradient[1], gradient[0])
         nu, omega = self.direction_to_vel(self.direction)
@@ -83,12 +91,6 @@ class GradientPfc:
         for p in self.estimator.particles:
             if self.goal.inside(p.pose): p.weight *= 1e-10
         self.estimator.resampling()
-
-        for p in self.estimator.particles:
-            if self.grid_map.in_obstacle(p.pose):
-                p.increase_avoid_weight(self.time_interval)
-            else:
-                p.decrease_avoid_weight(self.time_interval)
 
     # ベクトルを回転する
     def rotate_vector(self, vector, theta):
@@ -110,6 +112,12 @@ class GradientPfc:
         nu = self.max_nu * (1 - abs(turn_ratio))
 
         return nu, omega
+
+    def calc_next_state(self, nu, theta, time, pose):
+        # theta の方向に直進
+        return pose + np.array([nu*math.cos(theta),
+                                nu*math.sin(theta),
+                                0]) * time
 
     # 描画する
     def draw(self, ax, elems):

@@ -12,8 +12,8 @@ import numpy as np
 
 if __name__ == '__main__':   ###name_indent
     time_interval = 0.1
-    # world = World(10, time_interval, debug=False, recording_file_name='aaa')
-    world = World(300, time_interval, debug=False)
+    # world = World(150, time_interval, debug=False, recording_file_name='aaa')
+    world = World(150, time_interval, debug=False)
 
     m = Map()
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':   ###name_indent
     # 初期位置
     init_pose = np.array([-4.0, -1.0, 0])
     # 初期位置推定のばらつき
-    init_pose_stds = np.array([0.4, 0.2, 0.01])
+    init_pose_stds = np.array([0.3, 0.3, 0.01])
     # モーションアップデートのばらつき
     # motion_noise_stds = {"nn":0.19, "no":0.001, "on":0.13, "oo":0.2}
     motion_noise_stds = {"nn":0.02, "no":0.02, "on":0.02, "oo":0.02}

@@ -56,6 +56,8 @@ class GradientPfc:
 
         # 各パーティクルの回避率
         for i, g in enumerate(self.p_relative_gradient):
+            norm = np.linalg.norm(g)
+            g /= norm
             g *= self.estimator.particles[i].avoid_weight
 
         # パーティクルの価値を取得
@@ -127,6 +129,9 @@ class GradientPfc:
         # パーティクルの勾配を描画
         if self.draw_p_gradient:
             for i, g in enumerate(self.p_gradient):
+                norm = np.linalg.norm(g)
+                g /= norm
+                g *= self.estimator.particles[i].avoid_weight
                 pos = self.estimator.particles[i].pose[0:2]
                 posn = pos + g * 0.2
                 if self.estimator.particles[i].is_avoiding:

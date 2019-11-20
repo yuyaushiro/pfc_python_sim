@@ -56,9 +56,7 @@ class GradientPfc:
 
         # 各パーティクルの回避率
         for i, g in enumerate(self.p_relative_gradient):
-            norm = np.linalg.norm(g)
-            tmp = norm**(self.estimator.particles[i].avoid_weight)
-            g *= tmp
+            g *= self.estimator.particles[i].avoid_weight
 
         # パーティクルの価値を取得
         p_pos_value = np.array([self.grid_map.value(p.pose)

@@ -44,6 +44,6 @@ a[2] = [1, 4]
 print(a)
 
         # for g in self.p_gradient:
-        #     norm = np.linalg.norm(g)
-        #     a = norm**2 / norm
-        #     g *= a
+            # norm = np.linalg.norm(g)
+            # tmp = norm**(self.estimator.particles[i].avoid_weight)
+            # g *= tmp

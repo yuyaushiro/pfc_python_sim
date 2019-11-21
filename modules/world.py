@@ -53,6 +53,7 @@ class World:
     def one_step(self, i, elems, ax):
         while elems: elems.pop().remove()
         time_str = "t = %.2f[s]" % (self.time_interval*i)
+        print(time_str)
         elems.append(ax.text(-4.4, 4.5, time_str, fontsize=10))
         for obj in self.objects:
             obj.draw(ax, elems)

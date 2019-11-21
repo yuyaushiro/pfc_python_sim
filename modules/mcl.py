@@ -14,7 +14,7 @@ class Particle:
 
         self.is_avoiding = False
         self.avoid_weight = 1.0
-        self.avoid_time = 5.0
+        self.avoid_time = 0.1
         self.avoid_elapsed_time = 0.0
         # 適当な数値
         self.max_avoid_weight = 1/weight
@@ -33,7 +33,7 @@ class Particle:
             if self.avoid_elapsed_time < self.avoid_time:
                 self.avoid_elapsed_time += time_interval
             else:
-                decrease_num = self.max_avoid_weight/0.1 * time_interval
+                decrease_num = self.max_avoid_weight/5 * time_interval
                 self.avoid_weight -= decrease_num
                 if self.avoid_weight < 1.0:
                     self.avoid_weight = 1.0

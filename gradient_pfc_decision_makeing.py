@@ -12,7 +12,7 @@ import numpy as np
 
 if __name__ == '__main__':   ###name_indent
     time_interval = 0.1
-    world = World(150, time_interval, debug=False, recording_file_name='aaa')
+    world = World(150, time_interval, debug=False, recording_file_name='aaa', playback_speed=3)
     # world = World(150, time_interval, debug=False)
 
     m = Map()

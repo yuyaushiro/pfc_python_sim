@@ -9,12 +9,14 @@ import datetime
 
 # 世界を管理するクラス
 class World:
-    def __init__(self, time_span, time_interval, debug=False, recording_file_name=None):
+    def __init__(self, time_span, time_interval, debug=False,
+                 recording_file_name=None, playback_speed=1):
         self.objects = []
         self.debug = debug
         self.time_span = time_span
         self.time_interval = time_interval
         self.recording_file_name = recording_file_name
+        self.playback_speed = playback_speed
 
     # 世界にオブジェクトを追加する
     def append(self,obj):
@@ -41,7 +43,8 @@ class World:
                 plt.show()
             else:
                 Writer = anm.writers['ffmpeg']
-                writer = Writer(fps=10)
+                fps = self.playback_speed / self.time_interval
+                writer = Writer(fps=fps)
                 now = datetime.datetime.now()
                 self.ani.save('movie/' + self.recording_file_name + now.strftime('-%Y%m%d-%H%M%S') + '.mp4',
                               writer=writer, dpi=250)

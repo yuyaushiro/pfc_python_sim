@@ -1,5 +1,5 @@
 from modules.world import World, Landmark, Map, Goal
-from modules.grid_map import GridMap2D
+from modules.grid_map_2d import GridMap2D
 from modules.robot import IdealRobot
 from modules.sensor import IdealCamera, Camera
 from modules.agent import Agent, EstimationAgent, GradientAgent

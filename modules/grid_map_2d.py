@@ -5,7 +5,7 @@ import numpy as np
 
 
 # 格子地図クラス
-class GridMap:
+class GridMap2D:
     def __init__(self, map_name, resolution=[0.05, 0.05], origin=[0.0, 0.0], obstacle_thresh=254):
         # マップ名
         self.map_name = map_name

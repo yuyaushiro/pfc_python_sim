@@ -1,5 +1,5 @@
 from modules.mcl import Particle, Mcl
-from modules.grid_map import GridMap
+from modules.grid_map import GridMap2D
 
 import math
 import numpy as np

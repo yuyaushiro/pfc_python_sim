@@ -1,5 +1,5 @@
 from modules.world import World, Landmark, Map, Goal
-from modules.grid_map import GridMap
+from modules.grid_map import GridMap2D
 from modules.robot import IdealRobot
 from modules.sensor import IdealCamera, Camera
 from modules.agent import Agent, EstimationAgent, GradientAgent
@@ -18,7 +18,7 @@ if __name__ == '__main__':   ###name_indent
     m = Map()
 
     ### 専有格子地図を追加 ###
-    grid_map = GridMap('CorridorGimp_200x200', origin=[-5.0, -5.0])
+    grid_map = GridMap2D('CorridorGimp_200x200', origin=[-5.0, -5.0])
     # world.append(grid_map)
 
     ##ゴールの追加##

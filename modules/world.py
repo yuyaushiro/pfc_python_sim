@@ -10,13 +10,14 @@ import datetime
 # 世界を管理するクラス
 class World:
     def __init__(self, time_span, time_interval, debug=False,
-                 recording_file_name=None, playback_speed=1):
+                 recording_file_name=None, playback_speed=1, drawing_range=[-5, 5]):
         self.objects = []
         self.debug = debug
         self.time_span = time_span
         self.time_interval = time_interval
         self.recording_file_name = recording_file_name
         self.playback_speed = playback_speed
+        self.drawing_range = drawing_range
 
     # 世界にオブジェクトを追加する
     def append(self,obj):
@@ -27,8 +28,8 @@ class World:
         fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111)
         ax.set_aspect('equal')
-        ax.set_xlim(-5,5)
-        ax.set_ylim(-5,5)
+        ax.set_xlim(self.drawing_range[0], self.drawing_range[1])
+        ax.set_ylim(self.drawing_range[0], self.drawing_range[1])
         ax.set_xlabel("X",fontsize=10)
         ax.set_ylabel("Y",fontsize=10)
 

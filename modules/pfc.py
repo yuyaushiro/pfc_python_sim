@@ -31,7 +31,7 @@ class Pfc:
         self.magnitude = magnitude
 
         # 行動
-        self.actions = np.array([[0.0, 0.5], [0.1, 0.0], [0.0, -0.5]])
+        self.actions = np.array([[0.1, 0.0], [0.0, 0.5], [0.0, -0.5]])
 
         self.prev_Q_fpc = 0.0
 
@@ -42,11 +42,15 @@ class Pfc:
         self.estimate_state(self.estimator, observation)
 
         Q_PFC_list = np.array([self.calc_Q_pfc(a[0], a[1], pose) for a in self.actions])
-        if np.max(Q_PFC_list) < self.prev_Q_fpc:
-            self.prev_Q_fpc = np.max(Q_PFC_list)
-            action = self.actions[1]
-        else:
-            action = self.actions[np.argmax(Q_PFC_list)]
+        print(Q_PFC_list)
+        print('=========')
+        # 状態価値が改善しないときの処理
+        # if np.max(Q_PFC_list) < self.prev_Q_fpc:
+        #     self.prev_Q_fpc = np.max(Q_PFC_list)
+        #     action = self.actions[1]
+        # else:
+        #     action = self.actions[np.argmax(Q_PFC_list)]
+        action = self.actions[np.argmax(Q_PFC_list)]
 
         # action = self.grid_map.policy(pose)
 
@@ -63,15 +67,32 @@ class Pfc:
         self.estimator.resampling()
 
     def calc_Q_pfc(self, nu, omega, pose):
+        # 姿勢のリスト
         poses = np.array([p.pose for p in self.estimator.particles])
+        # 価値のリスト
         values = np.array([self.grid_map.value(p) for p in poses])
-        poses_n = np.array([IdealRobot.transition_state(nu, omega, self.time_interval, p)
+        # 状態繊維後の姿勢のリスト
+        poses_n = np.array([IdealRobot.transition_state(nu*0.1, omega, self.time_interval, p)
                            for p in poses])
-        rewards = np.array([self.time_interval + self.grid_map.in_obstacle(pn)*10
-                            for pn in poses_n])
+
+        indexs = np.array([self.grid_map.to_index(p)for p in poses])
+        indexs_n = np.array([self.grid_map.to_index(pn)for pn in poses_n])
+        # 行動による報酬
+        act_rewards = ~np.all(indexs == indexs_n, axis=1) * 0.1
+        # 障害物内移動による報酬
+        ob_rewards = np.array([self.grid_map.in_obstacle(pn)*10 for pn in poses_n])
+        rewards = act_rewards + ob_rewards
+
+        # 状態遷移後の価値のリスト
         values_n = np.array([self.grid_map.value(pn) for pn in poses_n])
-        Q_pfc = np.sum((values_n - rewards)/np.power(values, self.magnitude))
+        # Q_PFC値
+        Q_pfc = np.sum((values_n - rewards)/np.power(-values, self.magnitude))
+        print('---')
+        # print(values)
+        # print(rewards)
+        # print(values_n)
         return Q_pfc
+
         # pose_n = IdealRobot.transition_state(nu, omega, self.time_interval, pose)
         # reward = self.time_interval + self.grid_map.in_obstacle(pose_n)*10
         # value_n = self.grid_map.value(pose_n) - reward

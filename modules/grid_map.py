@@ -6,7 +6,7 @@ import numpy as np
 
 # 格子地図クラス
 class GridMap:
-    def __init__(self, map_name, resolution=[0.05, 0.05, math.pi/9], origin=[0.0, 0.0, 0.0],
+    def __init__(self, map_name, resolution=[0.05, 0.05, math.pi/12], origin=[0.0, 0.0, 0.0],
                  obstacle_thresh=254):
         # マップ名
         self.map_name = map_name
@@ -17,7 +17,7 @@ class GridMap:
         # 解像度 (m/pixel)
         self.resolution = np.array(resolution)
         # セルの数
-        self.cell_num = np.array([self.map_image.shape[0], self.map_image.shape[1], 18])
+        self.cell_num = np.array([self.map_image.shape[0], self.map_image.shape[1], 24])
         # マップ内の最小の姿勢
         self.pose_min = np.array(origin)
         # マップ内の最大の姿勢
@@ -63,7 +63,7 @@ class GridMap:
     # 価値観数の初期化
     def init_value(self, cell_num, map_name):
         value_data = np.zeros(np.r_[cell_num])
-        for line in open('value/' + map_name + 'x18.value', 'r'):
+        for line in open('value/' + map_name + 'x24.value', 'r'):
             d = line.split()
             value_data[int(d[0]), int(d[1]), int(d[2])] = d[3]
 
@@ -72,7 +72,7 @@ class GridMap:
     # 価値観数の初期化
     def init_policy(self, cell_num, map_name):
         policy_data = np.zeros((cell_num[0], cell_num[1], cell_num[2], 2))
-        for line in open('policy/' + map_name + 'x18.policy', 'r'):
+        for line in open('policy/' + map_name + 'x24.policy', 'r'):
             d = line.split()
             policy_data[int(d[0]), int(d[1]), int(d[2])] = [d[3], d[4]]
 
